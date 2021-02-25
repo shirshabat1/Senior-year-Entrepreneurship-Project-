@@ -5,7 +5,7 @@ import random
 import itertools
 import collections
 
-#filtered data
+# #filtered data
 lst1_carmen = np.load('filtered\\area_1_carmen_filtered_25359_signals.npy', allow_pickle=True)
 lst2_carmen = np.load('filtered\\area_2_carmen_filtered_52617_signals.npy', allow_pickle=True)
 lst3_carmen = np.load('filtered\\area_3_carmen_filtered_12431_signals.npy', allow_pickle=True)
@@ -15,15 +15,15 @@ lst1_penny = np.load('filtered\\area_1_penny_filtered_6331_signals.npy', allow_p
 lst2_penny = np.load('filtered\\area_2_penny_filtered_30472_signals.npy', allow_pickle=True)
 lst3_penny = np.load('filtered\\area_3_penny_filtered_2298_signals.npy', allow_pickle=True)
 lst4_penny = np.load('filtered\\area_4_penny_filtered_1780_signals.npy', allow_pickle=True)
-
+#
 lst1_menta = np.load('filtered\\area_1_menta_filtered_30408_signals.npy', allow_pickle=True)
 lst2_menta = np.load('filtered\\area_2_menta_filtered_47582_signals.npy', allow_pickle=True)
 lst3_menta = np.load('filtered\\area_3_menta_filtered_20016_signals.npy', allow_pickle=True)
 lst4_menta = np.load('filtered\\area_4_menta_filtered_4109_signals.npy', allow_pickle=True)
-
-carmen_full_table = pd.read_csv('carmen_full_info.csv')
-penny_full_table = pd.read_csv('penny_full_info.csv')
-menta_full_table = pd.read_csv('menta_full_info.csv')
+#
+carmen_full_table = pd.read_csv('features_excel\\carmen_full_info.csv')
+penny_full_table = pd.read_csv('features_excel\\penny_full_info.csv')
+menta_full_table = pd.read_csv('features_excel\\menta_full_info.csv')
 
 
 def data_size(lst1, lst2, lst3, lst4):
@@ -230,9 +230,23 @@ y= data_size(lst1_menta, lst2_menta, lst3_menta, lst4_menta)
 shared_data = shared_dates_level(menta_full_table)
 lst_dates = extract_signals(shared_data, lst1_menta)
 train, test, valid = data_for_big_area(y, lst_dates)
+print(np.shape(train))
+print(np.shape(test))
+
+# y= data_size(lst1_penny, lst2_penny, lst3_penny, lst4_penny)
+# shared_data = shared_dates_level(penny_full_table)
+# lst_dates = extract_signals(shared_data, lst1_penny)
+# train, test, valid = data_for_big_area(y, lst_dates)
+# print(np.shape(train))
+# print(np.shape(test))
 # data_for_big_area(y, lst2_dates)
 
-save_data(train, test, valid, "menta", 1)
-
-
-
+# save_data(train, test, valid, "menta", 1)
+#
+#
+# dic_1 = dict()
+# dic_1[0] = 1
+# dic_1[1] = 2
+# values_1 = dic_1.values()
+# p = values_1 + values_1
+# print(p)

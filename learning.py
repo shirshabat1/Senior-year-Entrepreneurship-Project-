@@ -18,7 +18,6 @@ from sklearn.ensemble import AdaBoostClassifier
 
 from sklearn.ensemble import RandomForestClassifier
 SAMPLE_RATE = 1000
- ### in this part - features includes entropy, cor
 
 
 
@@ -69,6 +68,7 @@ def extract_hdi(X):
 
 
 
+
 def extract_burg(X):
     X = X.astype(float)
     burg = nk.signal_psd(X, method="burg", min_frequency=1, max_frequency=20, order=10, show=False)["Power"]
@@ -111,7 +111,7 @@ def get_additional_features(area):
     features = []
     for x in tqdm(area):
         # y = extract_cor(x)
-        y = extract_hilbert(x)
+        y = extract_welch(x)
         # cor,  sample, entropy, analytic_signal, hdi, burg= extract_additional_feature(x)
         # feature = np.concatenate((cor,  sample, entropy, analytic_signal, hdi))
         features.append(y)
@@ -231,6 +231,10 @@ def SVM(x_train, y_train, x_test, y_test):
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
     print("SVM Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    print("SVM confusion: ")
+    print(metrics.confusion_matrix(y_test, y_pred))
+
+
 
 
 def SVMovr(x_train, y_train, x_test, y_test):
@@ -238,13 +242,22 @@ def SVMovr(x_train, y_train, x_test, y_test):
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
     print("SVC ONE VS REST Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    print("SVMovr confusion: ")
+    print(metrics.confusion_matrix(y_test, y_pred))
+
 
 
 def linearSVC(x_train, y_train, x_test, y_test):
     clf = svm.LinearSVC()
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
+    print(len(x_train))
+    print(len(y_train))
     print("Linear SVC Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    print("linearSVC confusion: ")
+    print(metrics.confusion_matrix(y_test, y_pred))
+
+
 
 
 def randomForest(x_train, y_train, x_test, y_test):
@@ -261,9 +274,9 @@ def randomForest(x_train, y_train, x_test, y_test):
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
     print("Random Forest Accuracy:", metrics.accuracy_score(y_test, y_pred))
-    y_pred = clf.predict(x_train)
-    print(y_pred)
-    print("Overfitting Random Forest Accuracy:", metrics.accuracy_score(y_train, y_pred))
+    print("Overfitting Random Forest Accuracy:")
+    print(metrics.confusion_matrix(y_test, y_pred))
+
 
 
 def adaBoost(x_train, y_train, x_test, y_test):
@@ -271,6 +284,9 @@ def adaBoost(x_train, y_train, x_test, y_test):
     abc.fit(x_train, y_train)
     y_pred = abc.predict(x_test)
     print("boost Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    print("boost confusion: ")
+    print(metrics.confusion_matrix(y_test, y_pred))
+
 
 
 
@@ -279,6 +295,10 @@ def GradientBoosting(x_train, y_train, x_test, y_test):
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
     print("Gradient Boosting Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    print("Gradient confusion: ")
+    print(metrics.confusion_matrix(y_test, y_pred))
+
+
 
 
 def KNeighbors(x_train, y_train, x_test, y_test):
@@ -290,6 +310,9 @@ def KNeighbors(x_train, y_train, x_test, y_test):
     y_pred = clf.predict(x_test)
     # y_pred = clf.predict(x_train)
     print("KNeighbors Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    print("KNeighbors confusion: ")
+    print(metrics.confusion_matrix(y_test, y_pred))
+
 
 
 def lda(x_train, y_train, x_test, y_test):
@@ -298,13 +321,23 @@ def lda(x_train, y_train, x_test, y_test):
     LDA(n_components=None, priors=None, shrinkage=None, solver='svd',store_covariance=False, tol=0.0001)
     y_pred = clf.predict(x_test)
     print("lda Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    print("lda confusion: ")
+    print(metrics.confusion_matrix(y_test, y_pred))
+
+
 
 def qda(x_train, y_train, x_test, y_test):
     clf = QDA()
     clf.fit(x_train, y_train)
     QDA(priors=None, reg_param=0.0)
     y_pred = clf.predict(x_test)
+    print(len(x_train))
+    print(len(y_train))
     print("qda Accuracy:", metrics.accuracy_score(y_test, y_pred))
+    print("qda confusion: ")
+    print(metrics.confusion_matrix(y_test, y_pred))
+
+
 
 def mutualInfo(x, y, monkey):
     mi = mutual_info_classif(x, y, discrete_features=False)
@@ -324,14 +357,6 @@ def mutualInfo(x, y, monkey):
     print(index1)
     print(index2)
 
-
-
-
-def addFeatures(old, new):
-    res = []
-    for i in tqdm(range(len(old))):
-        res.append(np.concatenate((old[i], new[i])))
-    return np.array(res)
 
 
 def getFeaturesAndNormalize(data):
