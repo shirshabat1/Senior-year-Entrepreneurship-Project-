@@ -195,14 +195,18 @@ c_py4 = (c_p_y_4_1, c_p_y_4_2, c_p_y_4_3, c_p_y_4_4,  c_p_y_4_5)
 #     px_test, py_test = get_x_y(px1, px2, px3,px4)
 #     get_result(c_m_x_train, c_m_y_train, px_test, py_test, "carmen + menta")
 
-if __name__ == '__main__':
-#     # penny+ menta
-    p_m_x_train, c_m_y_train = get_x_y(p_my1, p_my2, p_my3, p_my4)
-    # c_m_x_test, c_m_y_test = get_x_y(c_mx1, c_mx2, c_mx3, c_mx4)
-    cx_test, cy_test = get_x_y(cx1, cx2, cx3,cx4)
-    get_result(p_m_x_train, c_m_y_train, cx_test, cy_test, "penny + menta")
+# if __name__ == '__main__':
+# #     # penny+ menta
+#     p_m_x_train, c_m_y_train = get_x_y(p_my1, p_my2, p_my3, p_my4)
+#     # c_m_x_test, c_m_y_test = get_x_y(c_mx1, c_mx2, c_mx3, c_mx4)
+#     cx_test, cy_test = get_x_y(cx1, cx2, cx3,cx4)
+#     get_result(p_m_x_train, c_m_y_train, cx_test, cy_test, "penny + menta")
 
-#
+if __name__ == '__main__':
+#     # carmen to menta
+    cx_train, cy_train = get_x_y(cy1, cy2, cy3, cy4)
+    cx_test, cy_test = get_x_y(mx1, mx2, mx3, mx4)
+    get_result(cx_train, cy_train, cx_test, cy_test, "carmen to menta")
 
 
 
