@@ -25,7 +25,9 @@ def extract_mel_chroma_first_fft_feature(X):
     X = X.astype(float)
     stft = np.abs(librosa.stft(X))
     chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=SAMPLE_RATE).T, axis=0)
+    # print("chroma: ", np.shape(chroma))
     mel = np.mean(librosa.feature.melspectrogram(X, sr=SAMPLE_RATE).T, axis=0)
+    # print("mel :", np.shape(mel))
     fft = np.fft.fft(X) / len(X)
     fft = np.abs(fft[: len(X) // 7])
     fft = [fft[0]]
@@ -53,6 +55,7 @@ def extract_cor(X):
     X = X.astype(float)
     cor = np.corrcoef(X, X)
     cor = np.array([cor[0][1], cor[1][0]])
+    # print("cor: ", np.shape(cor))
     return cor
 
 def extract_entropy(X):
@@ -79,41 +82,31 @@ def extract_band(X, method):
     X = X.astype(float)
     return get_band(X, method)
 
-# def extract_feature(X):
-#     X = X.astype(float)
-#     stft = np.abs(librosa.stft(X))
-#     mfccs = np.mean(librosa.feature.mfcc(y=X, sr=SAMPLE_RATE, n_mfcc=40).T, axis=0)
-#     chroma = np.mean(librosa.feature.chroma_stft(S=stft, sr=SAMPLE_RATE).T, axis=0)
-#     mel = np.mean(librosa.feature.melspectrogram(X, sr=SAMPLE_RATE).T, axis=0)
-#     shannon = [ent.shannon_entropy(X)]
-#     sample = ent.sample_entropy(X, 1)
-#     per = [ent.permutation_entropy(X)]
-#     fft = np.fft.fft(X) / len(X)
-#     fft = np.abs(fft[: len(X) // 7])
-#     fft = [fft[0]]
-#     return mfccs, chroma, mel, shannon, sample, per, fft
-
-
 def get_features(area):
     """
     this method takes only mel, chroma and the first fft features
     """
     features = []
     for x in tqdm(area):
-        # chroma, mel, fft, welch, multitaper = extract_features(x)
         chroma, mel, fft = extract_mel_chroma_first_fft_feature(x)
         feature = np.concatenate((chroma, mel, fft))
         features.append(feature)
     return np.array(features)
 
 
-def get_additional_features(area):
+def get_additional_features(area, feature):
     features = []
     for x in tqdm(area):
-        # y = extract_cor(x)
-        y = extract_welch(x)
-        # cor,  sample, entropy, analytic_signal, hdi, burg= extract_additional_feature(x)
-        # feature = np.concatenate((cor,  sample, entropy, analytic_signal, hdi))
+        if feature == 'cor':
+            y = extract_cor(x)
+        elif feature == 'welch':
+            y = extract_welch(x)
+        elif feature == 'entropy':
+            y = extract_entropy(x)
+        elif feature == 'hdi':
+            y = extract_hdi(x)
+        elif feature == 'burg':
+            y = extract_burg(x)
         features.append(y)
     return np.array(features)
 
@@ -274,7 +267,7 @@ def randomForest(x_train, y_train, x_test, y_test):
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
     print("Random Forest Accuracy:", metrics.accuracy_score(y_test, y_pred))
-    print("Overfitting Random Forest Accuracy:")
+    print("confusion_matrix Random Forest Accuracy:")
     print(metrics.confusion_matrix(y_test, y_pred))
 
 
