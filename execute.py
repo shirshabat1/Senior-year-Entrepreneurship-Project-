@@ -30,65 +30,70 @@ def get_result(x_train, y_train, x_test, y_test, monkey):
 
 ############ CARMEN ######################
 
-cy1 = (c.train1, c.train_1_welch, c.train_1_psd_welch, c.train_1_psd_multitaper, c.train_1_cor)
-cy2 = (c.train2, c.train_2_welch, c.train_2_psd_welch, c.train_2_psd_multitaper, c.train_2_cor)
-cy3 = (c.train3, c.train_3_welch, c.train_3_psd_welch, c.train_3_psd_multitaper, c.train_3_cor)
-cy4 = (c.train4, c.train_4_welch, c.train_4_psd_welch, c.train_4_psd_multitaper, c.train_4_cor)
 
-cx1 = (c.test1, c.test_1_welch, c.test_1_psd_welch, c.test_1_psd_multitaper, c.test_1_cor)
-cx2 = (c.test2, c.test_2_welch, c.test_2_psd_welch, c.test_2_psd_multitaper, c.test_2_cor)
-cx3 = (c.test3, c.test_3_welch, c.test_3_psd_welch, c.test_3_psd_multitaper, c.test_3_cor)
-cx4 = (c.test4, c.test_4_welch, c.test_4_psd_welch, c.test_4_psd_multitaper, c.test_4_cor)
-#
-# cz1 = (c.valid1, c.valid_1_welch, c.valid_1_psd_welch, c.valid_1_psd_multitaper, c.valid_1_cor)
-# cz2 = (c.valid2, c.valid_2_welch, c.valid_2_psd_welch, c.valid_2_psd_multitaper, c.valid_2_cor)
-# cz3 = (c.valid3, c.valid_3_welch, c.valid_3_psd_welch, c.valid_3_psd_multitaper, c.valid_3_cor)
-# cz4 = (c.valid4, c.valid_4_welch, c.valid_4_psd_welch, c.valid_4_psd_multitaper, c.valid_4_cor)
+cy1 = (c.train1, c.train_1_welch, c.train_1_psd_welch, c.train_1_psd_multitaper)
+cy2 = (c.train2, c.train_2_welch, c.train_2_psd_welch, c.train_2_psd_multitaper)
+cy3 = (c.train3, c.train_3_welch, c.train_3_psd_welch, c.train_3_psd_multitaper)
+cy4 = (c.train4, c.train_4_welch, c.train_4_psd_welch, c.train_4_psd_multitaper)
 
+cx1 = (c.test1, c.test_1_welch, c.test_1_psd_welch, c.test_1_psd_multitaper)
+cx2 = (c.test2, c.test_2_welch, c.test_2_psd_welch, c.test_2_psd_multitaper)
+cx3 = (c.test3, c.test_3_welch, c.test_3_psd_welch, c.test_3_psd_multitaper)
+cx4 = (c.test4, c.test_4_welch, c.test_4_psd_welch, c.test_4_psd_multitaper)
 
+cz1 = (c.valid1, c.valid_1_welch, c.valid_1_psd_welch, c.valid_1_psd_multitaper)
+cz2 = (c.valid2, c.valid_2_welch, c.valid_2_psd_welch, c.valid_2_psd_multitaper)
+cz3 = (c.valid3, c.valid_3_welch, c.valid_3_psd_welch, c.valid_3_psd_multitaper)
+cz4 = (c.valid4, c.valid_4_welch, c.valid_4_psd_welch, c.valid_4_psd_multitaper)
 
 ############ MENTA ######################
+#
 
-my1 = (m.train1, m.train_1_welch, m.train_1_psd_welch, m.train_1_psd_multitaper, m.train_1_cor)
-my2 = (m.train2, m.train_2_welch, m.train_2_psd_welch, m.train_2_psd_multitaper, m.train_2_cor)
-my3 = (m.train3, m.train_3_welch, m.train_3_psd_welch, m.train_3_psd_multitaper, m.train_3_cor)
-my4 = (m.train4, m.train_4_welch, m.train_4_psd_welch, m.train_4_psd_multitaper, m.train_4_cor)
+my1 = (m.train1, m.train_1_welch, m.train_1_psd_welch, m.train_1_psd_multitaper)
+my2 = (m.train2, m.train_2_welch, m.train_2_psd_welch, m.train_2_psd_multitaper)
+my3 = (m.train3, m.train_3_welch, m.train_3_psd_welch, m.train_3_psd_multitaper)
+my4 = (m.train4, m.train_4_welch, m.train_4_psd_welch, m.train_4_psd_multitaper)
 
-mx1 = (m.test1, m.test_1_welch, m.test_1_psd_welch, m.test_1_psd_multitaper, m.test_1_cor)
-mx2 = (m.test2, m.test_2_welch, m.test_2_psd_welch, m.test_2_psd_multitaper, m.test_2_cor)
-mx3 = (m.test3, m.test_3_welch, m.test_3_psd_welch, m.test_3_psd_multitaper, m.test_3_cor)
-mx4 = (m.test4, m.test_4_welch, m.test_4_psd_welch, m.test_4_psd_multitaper, m.test_4_cor)
+mx1 = (m.test1, m.test_1_welch, m.test_1_psd_welch, m.test_1_psd_multitaper)
+mx2 = (m.test2, m.test_2_welch, m.test_2_psd_welch, m.test_2_psd_multitaper)
+mx3 = (m.test3, m.test_3_welch, m.test_3_psd_welch, m.test_3_psd_multitaper)
+mx4 = (m.test4, m.test_4_welch, m.test_4_psd_welch, m.test_4_psd_multitaper)
 
-# mz1 = (m.valid1, m.valid_1_welch, m.valid_1_psd_welch, m.valid_1_psd_multitaper, m.valid_1_cor)
-# mz2 = (m.valid2, m.valid_2_welch, m.valid_2_psd_welch, m.valid_2_psd_multitaper, m.valid_2_cor)
-# mz3 = (m.valid3, m.valid_3_welch, m.valid_3_psd_welch, m.valid_3_psd_multitaper, m.valid_3_cor)
-# mz4 = (m.valid4, m.valid_4_welch, m.valid_4_psd_welch, m.valid_4_psd_multitaper, m.valid_4_cor)
+mz1 = (m.valid1, m.valid_1_welch, m.valid_1_psd_welch, m.valid_1_psd_multitaper)
+mz2 = (m.valid2, m.valid_2_welch, m.valid_2_psd_welch, m.valid_2_psd_multitaper)
+mz3 = (m.valid3, m.valid_3_welch, m.valid_3_psd_welch, m.valid_3_psd_multitaper)
+mz4 = (m.valid4, m.valid_4_welch, m.valid_4_psd_welch, m.valid_4_psd_multitaper)
+
+
+
 
 ############ PENNY ######################
 
-py1 = (p.train1, p.train_1_welch, p.train_1_psd_welch, p.train_1_psd_multitaper, p.train_1_cor)
-py2 = (p.train2, p.train_2_welch, p.train_2_psd_welch, p.train_2_psd_multitaper, p.train_2_cor)
-py3 = (p.train3, p.train_3_welch, p.train_3_psd_welch, p.train_3_psd_multitaper, p.train_3_cor)
-py4 = (p.train4, p.train_4_welch, p.train_4_psd_welch, p.train_4_psd_multitaper, p.train_4_cor)
+py1 = (p.train1, p.train_1_welch, p.train_1_psd_welch, p.train_1_psd_multitaper)
+py2 = (p.train2, p.train_2_welch, p.train_2_psd_welch, p.train_2_psd_multitaper)
+py3 = (p.train3, p.train_3_welch, p.train_3_psd_welch, p.train_3_psd_multitaper)
+py4 = (p.train4, p.train_4_welch, p.train_4_psd_welch, p.train_4_psd_multitaper)
 
-px1 = (p.test1, p.test_1_welch, p.test_1_psd_welch, p.test_1_psd_multitaper, p.test_1_cor)
-px2 = (p.test2, p.test_2_welch, p.test_2_psd_welch, p.test_2_psd_multitaper, p.test_2_cor)
-px3 = (p.test3, p.test_3_welch, p.test_3_psd_welch, p.test_3_psd_multitaper, p.test_3_cor)
-px4 = (p.test4, p.test_4_welch, p.test_4_psd_welch, p.test_4_psd_multitaper, p.test_4_cor)
+px1 = (p.test1, p.test_1_welch, p.test_1_psd_welch, p.test_1_psd_multitaper)
+px2 = (p.test2, p.test_2_welch, p.test_2_psd_welch, p.test_2_psd_multitaper)
+px3 = (p.test3, p.test_3_welch, p.test_3_psd_welch, p.test_3_psd_multitaper)
+px4 = (p.test4, p.test_4_welch, p.test_4_psd_welch, p.test_4_psd_multitaper)
 
-# pz1 = (p.valid1, p.valid_1_welch, p.valid_1_psd_welch, p.valid_1_psd_multitaper, p.valid_1_cor)
-# pz2 = (p.valid2, p.valid_2_welch, p.valid_2_psd_welch, p.valid_2_psd_multitaper, p.valid_2_cor)
-# pz3 = (p.valid3, p.valid_3_welch, p.valid_3_psd_welch, p.valid_3_psd_multitaper, p.valid_3_cor)
-# pz4 = (p.valid4, p.valid_4_welch, p.valid_4_psd_welch, p.valid_4_psd_multitaper, p.valid_4_cor)
+pz1 = (p.valid1, p.valid_1_welch, p.valid_1_psd_welch, p.valid_1_psd_multitaper)
+pz2 = (p.valid2, p.valid_2_welch, p.valid_2_psd_welch, p.valid_2_psd_multitaper)
+pz3 = (p.valid3, p.valid_3_welch, p.valid_3_psd_welch, p.valid_3_psd_multitaper)
+pz4 = (p.valid4, p.valid_4_welch, p.valid_4_psd_welch, p.valid_4_psd_multitaper)
 
 
-# c.test = np.concatenate()
-# print(c.train1)
-# print(p.train1)
+
 def add_feat(monkey1, monkey2):
-    for i in range(len(monkey2)):
-        monkey1[i] = monkey1[i] + monkey2[2]
-    return monkey1
+    monkey_len = min(len(monkey1), len(monkey2))
+    monkey = monkey2
+    if len(monkey1) == monkey_len:
+        monkey = monkey1
+    for i in range(len(monkey)):
+        monkey[i] = monkey1[i] + monkey2[i]
+    return monkey
 
 # p_m_x_1_1, p_m_x_1_2, p_m_x_1_3, p_m_x_1_4, p_m_x_1_5 = add_feat(m.test1, p.test1), add_feat(m.test_1_welch, p.test_1_welch), add_feat(m.test_1_psd_welch, p.test_1_psd_welch),\
 #                              add_feat(m.test_1_psd_multitaper, p.test_1_psd_multitaper), add_feat(m.test_1_cor, p.test_1_cor)
@@ -227,27 +232,28 @@ def add_feat(monkey1, monkey2):
 
 
 
-# #
-if __name__ == '__main__':
-    # carmen
-    cx_train, cy_train = get_x_y(cy1, cy2, cy3, cy4)
-    cx_test, cy_test = get_x_y(cx1, cx2, cx3, cx4)
-    # cx_valid, cy_valid = get_x_y(cz1, cz2, cz3, cz4)
-    # get_result(cx_train, cy_train, cx_valid, cy_valid, "carmen - validation")
-    get_result(cx_train, cy_train, cx_test, cy_test, "carmen")
-# # #
-# if __name__ == '__main__':
-# # # menta
-#     mx_train, my_train = get_x_y(my1, my2, my3, my4)
-#     mx_test, my_test = get_x_y(mx1, mx2, mx3,mx4)
-#     # mx_valid, my_valid = get_x_y(mz1, mz2, mz3, mz4)
-#     # get_result(mx_train, my_train, mx_valid, my_valid, "menta - validation")
-#     get_result(mx_train, my_train, mx_test, my_test, "menta")
 
+# if __name__ == '__main__':
+#     # carmen
+#     cx_train, cy_train = get_x_y(cy1, cy2, cy3, cy4)
+#     cx_test, cy_test = get_x_y(cx1, cx2, cx3, cx4)
+#     cx_valid, cy_valid = get_x_y(cz1, cz2, cz3, cz4)
+#     get_result(cx_train, cy_train, cx_valid, cy_valid, "carmen - validation")
+    # get_result(cx_train, cy_train, cx_test, cy_test, "carmen")
+# # # #
+if __name__ == '__main__':
+# # # menta
+    mx_train, my_train = get_x_y(my1, my2, my3, my4)
+    mx_test, my_test = get_x_y(mx1, mx2, mx3,mx4)
+    mx_valid, my_valid = get_x_y(mz1, mz2, mz3, mz4)
+    get_result(mx_train, my_train, mx_valid, my_valid, "menta - validation")
+    # get_result(mx_train, my_train, mx_test, my_test, "menta")
+#
 # if __name__ == '__main__':
 # # penny
 #     mx_train, my_train = get_x_y(py1, py2, py3, py4)
 #     mx_test, my_test = get_x_y(px1, px2, px3,px4)
-#     # mx_valid, my_valid = get_x_y(pz1, pz2, pz3,pz4)
+#     mx_valid, my_valid = get_x_y(pz1, pz2, pz3,pz4)
 #     # get_result(mx_train, my_train, mx_valid, my_valid, "penny - validation")
 #     get_result(mx_train, my_train, mx_test, my_test, "penny")
+#
