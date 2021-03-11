@@ -4,6 +4,8 @@ import numpy as np
 import penny_files as p
 import carmen_files as c
 import menta_files as m
+import functools
+import matplotlib.pyplot as plt
 
 
 def get_x_y(x1, x2, x3, x4):
@@ -18,12 +20,12 @@ def get_x_y(x1, x2, x3, x4):
 
 def get_result(x_train, y_train, x_test, y_test, monkey):
     print("-----" + str(monkey) + "--------")
-    learn.randomForest(x_train, y_train, x_test, y_test)
-    learn.KNeighbors(x_train, y_train, x_test, y_test)
-    learn.qda(x_train, y_train, x_test, y_test)
-    learn.lda(x_train, y_train, x_test, y_test)
-    learn.adaBoost(x_train, y_train, x_test, y_test)
-    learn.linearSVC(x_train, y_train, x_test, y_test)
+    learn.randomForest(x_train, y_train, x_test, y_test, monkey)
+    learn.KNeighbors(x_train, y_train, x_test, y_test, monkey)
+    learn.qda(x_train, y_train, x_test, y_test, monkey)
+    learn.lda(x_train, y_train, x_test, y_test, monkey)
+    # learn.adaBoost(x_train, y_train, x_test, y_test)
+    # learn.linearSVC(x_train, y_train, x_test, y_test, monkey)
     learn.mutualInfo(x_test, y_test, str(monkey) + " - test")
     learn.mutualInfo(x_train, y_train, str(monkey) + " - train")
 
@@ -64,9 +66,6 @@ mz2 = (m.valid2, m.valid_2_welch, m.valid_2_psd_welch, m.valid_2_psd_multitaper)
 mz3 = (m.valid3, m.valid_3_welch, m.valid_3_psd_welch, m.valid_3_psd_multitaper)
 mz4 = (m.valid4, m.valid_4_welch, m.valid_4_psd_welch, m.valid_4_psd_multitaper)
 
-
-
-
 ############ PENNY ######################
 
 py1 = (p.train1, p.train_1_welch, p.train_1_psd_welch, p.train_1_psd_multitaper)
@@ -85,175 +84,286 @@ pz3 = (p.valid3, p.valid_3_welch, p.valid_3_psd_welch, p.valid_3_psd_multitaper)
 pz4 = (p.valid4, p.valid_4_welch, p.valid_4_psd_welch, p.valid_4_psd_multitaper)
 
 
-
-def add_feat(monkey1, monkey2):
-    monkey_len = min(len(monkey1), len(monkey2))
-    monkey = monkey2
-    if len(monkey1) == monkey_len:
-        monkey = monkey1
-    for i in range(len(monkey)):
-        monkey[i] = monkey1[i] + monkey2[i]
-    return monkey
-
-# p_m_x_1_1, p_m_x_1_2, p_m_x_1_3, p_m_x_1_4, p_m_x_1_5 = add_feat(m.test1, p.test1), add_feat(m.test_1_welch, p.test_1_welch), add_feat(m.test_1_psd_welch, p.test_1_psd_welch),\
-#                              add_feat(m.test_1_psd_multitaper, p.test_1_psd_multitaper), add_feat(m.test_1_cor, p.test_1_cor)
-# p_m_x_2_1, p_m_x_2_2, p_m_x_2_3, p_m_x_2_4, p_m_x_2_5 = add_feat(m.test2, p.test2), add_feat(m.test_2_welch, p.test_2_welch), add_feat(m.test_2_psd_welch, p.test_2_psd_welch),\
-#                              add_feat(m.test_2_psd_multitaper, p.test_2_psd_multitaper), add_feat(m.test_2_cor, p.test_2_cor)
-#
-# p_m_x_3_1, p_m_x_3_2, p_m_x_3_3, p_m_x_3_4, p_m_x_3_5 = add_feat(m.test3, p.test3), add_feat(m.test_3_welch, p.test_3_welch), add_feat(m.test_3_psd_welch, p.test_3_psd_welch),\
-#                              add_feat(m.test_3_psd_multitaper, p.test_3_psd_multitaper), add_feat(m.test_3_cor, p.test_3_cor)
-#
-# p_m_x_4_1, p_m_x_4_2, p_m_x_4_3, p_m_x_4_4, p_m_x_4_5 = add_feat(m.test4, p.test4), add_feat(m.test_4_welch, p.test_4_welch), add_feat(m.test_4_psd_welch, p.test_4_psd_welch),\
-#                              add_feat(m.test_4_psd_multitaper, p.test_4_psd_multitaper), add_feat(m.test_4_cor, p.test_4_cor)
-#
-#
-# p_m_y_1_1, p_m_y_1_2, p_m_y_1_3, p_m_y_1_4, p_m_y_1_5 = add_feat(m.train1, p.train1), add_feat(m.train_1_welch, p.train_1_welch), add_feat(m.train_1_psd_welch, p.train_1_psd_welch),\
-#                              add_feat(m.train_1_psd_multitaper, p.train_1_psd_multitaper), add_feat(m.train_1_cor, p.train_1_cor)
-# p_m_y_2_1, p_m_y_2_2, p_m_y_2_3, p_m_y_2_4, p_m_y_2_5 = add_feat(m.train2, p.train2), add_feat(m.train_2_welch, p.train_2_welch), add_feat(m.train_2_psd_welch, p.train_2_psd_welch),\
-#                              add_feat(m.train_2_psd_multitaper, p.train_2_psd_multitaper), add_feat(m.train_2_cor,p.train_2_cor)
-#
-# p_m_y_3_1, p_m_y_3_2, p_m_y_3_3, p_m_y_3_4, p_m_y_3_5 = add_feat(m.train3, p.train3), add_feat(m.train_3_welch, p.train_3_welch), add_feat(m.train_3_psd_welch, p.train_3_psd_welch),\
-#                              add_feat(m.train_3_psd_multitaper, p.train_3_psd_multitaper), add_feat(m.train_3_cor, p.train_3_cor)
-#
-# p_m_y_4_1, p_m_y_4_2, p_m_y_4_3, p_m_y_4_4, p_m_y_4_5 = add_feat(m.train4, p.train4), add_feat(m.train_4_welch, p.train_4_welch), add_feat(m.train_4_psd_welch, p.train_4_psd_welch),\
-#                              add_feat(m.train_4_psd_multitaper, p.train_4_psd_multitaper), add_feat(m.train_4_cor, p.train_4_cor)
-#
-#
-#
-# c_p_x_1_1, c_p_x_1_2, c_p_x_1_3, c_p_x_1_4, c_p_x_1_5 = add_feat(c.test1, p.test1), add_feat(c.test_1_welch, p.test_1_welch), add_feat(c.test_1_psd_welch, p.test_1_psd_welch),\
-#                              add_feat(c.test_1_psd_multitaper, p.test_1_psd_multitaper), add_feat(c.test_1_cor, p.test_1_cor)
-# c_p_x_2_1, c_p_x_2_2, c_p_x_2_3, c_p_x_2_4, c_p_x_2_5 = add_feat(c.test2, p.test2), add_feat(c.test_2_welch, p.test_2_welch), add_feat(c.test_2_psd_welch, p.test_2_psd_welch),\
-#                              add_feat(c.test_2_psd_multitaper, p.test_2_psd_multitaper), add_feat(c.test_2_cor, p.test_2_cor)
-#
-# c_p_x_3_1, c_p_x_3_2, c_p_x_3_3, c_p_x_3_4, c_p_x_3_5 = add_feat(c.test3, p.test3), add_feat(c.test_3_welch, p.test_3_welch), add_feat(c.test_3_psd_welch, p.test_3_psd_welch),\
-#                              add_feat(c.test_3_psd_multitaper, p.test_3_psd_multitaper), add_feat(c.test_3_cor, p.test_3_cor)
-#
-# c_p_x_4_1, c_p_x_4_2, c_p_x_4_3, c_p_x_4_4, c_p_x_4_5 = add_feat(c.test4, p.test4), add_feat(c.test_4_welch, p.test_4_welch), add_feat(c.test_4_psd_welch, p.test_4_psd_welch),\
-#                              add_feat(c.test_4_psd_multitaper, p.test_4_psd_multitaper), add_feat(c.test_4_cor, p.test_4_cor)
-#
-#
-# c_p_y_1_1, c_p_y_1_2, c_p_y_1_3, c_p_y_1_4, c_p_y_1_5 = add_feat(c.train1, p.train1), add_feat(c.train_1_welch, p.train_1_welch), add_feat(c.train_1_psd_welch, p.train_1_psd_welch),\
-#                              add_feat(c.train_1_psd_multitaper, p.train_1_psd_multitaper), add_feat(c.train_1_cor, p.train_1_cor)
-# c_p_y_2_1, c_p_y_2_2, c_p_y_2_3, c_p_y_2_4, c_p_y_2_5 = add_feat(c.train2, p.train2), add_feat(c.train_2_welch, p.train_2_welch), add_feat(c.train_2_psd_welch, p.train_2_psd_welch),\
-#                              add_feat(c.train_2_psd_multitaper, p.train_2_psd_multitaper), add_feat(c.train_2_cor,p.train_2_cor)
-#
-# c_p_y_3_1, c_p_y_3_2, c_p_y_3_3, c_p_y_3_4, c_p_y_3_5 = add_feat(c.train3, p.train3), add_feat(c.train_3_welch, p.train_3_welch), add_feat(c.train_3_psd_welch, p.train_3_psd_welch),\
-#                              add_feat(c.train_3_psd_multitaper, p.train_3_psd_multitaper), add_feat(c.train_3_cor, p.train_3_cor)
-#
-# c_p_y_4_1, c_p_y_4_2, c_p_y_4_3, c_p_y_4_4, c_p_y_4_5 = add_feat(c.train4, p.train4), add_feat(c.train_4_welch, p.train_4_welch), add_feat(c.train_4_psd_welch, p.train_4_psd_welch),\
-#                              add_feat(c.train_4_psd_multitaper, p.train_4_psd_multitaper), add_feat(c.train_4_cor, p.train_4_cor)
-#
-#
-#
-# c_m_x_1_1, c_m_x_1_2, c_m_x_1_3, c_m_x_1_4, c_m_x_1_5 = add_feat(c.test1, m.test1), add_feat(c.test_1_welch, m.test_1_welch), add_feat(c.test_1_psd_welch, m.test_1_psd_welch),\
-#                              add_feat(c.test_1_psd_multitaper, m.test_1_psd_multitaper), add_feat(c.test_1_cor, m.test_1_cor)
-# c_m_x_2_1, c_m_x_2_2, c_m_x_2_3, c_m_x_2_4, c_m_x_2_5 = add_feat(c.test2, m.test2), add_feat(c.test_2_welch, m.test_2_welch), add_feat(c.test_2_psd_welch, m.test_2_psd_welch),\
-#                              add_feat(c.test_2_psd_multitaper, m.test_2_psd_multitaper), add_feat(c.test_2_cor, m.test_2_cor)
-#
-# c_m_x_3_1, c_m_x_3_2, c_m_x_3_3, c_m_x_3_4, c_m_x_3_5 = add_feat(c.test3, m.test3), add_feat(c.test_3_welch, m.test_3_welch), add_feat(c.test_3_psd_welch, m.test_3_psd_welch),\
-#                              add_feat(c.test_3_psd_multitaper, m.test_3_psd_multitaper), add_feat(c.test_3_cor, m.test_3_cor)
-#
-# c_m_x_4_1, c_m_x_4_2, c_m_x_4_3, c_m_x_4_4, c_m_x_4_5 = add_feat(c.test4, m.test4), add_feat(c.test_4_welch, m.test_4_welch), add_feat(c.test_4_psd_welch, m.test_4_psd_welch),\
-#                              add_feat(c.test_4_psd_multitaper, m.test_4_psd_multitaper), add_feat(c.test_4_cor, m.test_4_cor)
-#
-#
-# c_m_y_1_1, c_m_y_1_2, c_m_y_1_3, c_m_y_1_4, c_m_y_1_5 = add_feat(c.train1, m.train1), add_feat(c.train_1_welch, m.train_1_welch), add_feat(c.train_1_psd_welch, m.train_1_psd_welch),\
-#                              add_feat(c.train_1_psd_multitaper, m.train_1_psd_multitaper), add_feat(c.train_1_cor, m.train_1_cor)
-# c_m_y_2_1, c_m_y_2_2, c_m_y_2_3, c_m_y_2_4, c_m_y_2_5 = add_feat(c.train2, m.train2), add_feat(c.train_2_welch, m.train_2_welch), add_feat(c.train_2_psd_welch, m.train_2_psd_welch),\
-#                              add_feat(c.train_2_psd_multitaper, m.train_2_psd_multitaper), add_feat(c.train_2_cor, m.train_2_cor)
-#
-# c_m_y_3_1, c_m_y_3_2, c_m_y_3_3, c_m_y_3_4, c_m_y_3_5 = add_feat(c.train3, m.train3), add_feat(c.train_3_welch, m.train_3_welch), add_feat(c.train_3_psd_welch, m.train_3_psd_welch),\
-#                              add_feat(c.train_3_psd_multitaper, m.train_3_psd_multitaper), add_feat(c.train_3_cor, m.train_3_cor)
-#
-# c_m_y_4_1, c_m_y_4_2, c_m_y_4_3, c_m_y_4_4, c_m_y_4_5 = add_feat(c.train4, m.train4), add_feat(c.train_4_welch, m.train_4_welch), add_feat(c.train_4_psd_welch, m.train_4_psd_welch),\
-#                              add_feat(c.train_4_psd_multitaper, m.train_4_psd_multitaper), add_feat(c.train_4_cor, m.train_4_cor)
+def combine_monkey(m1, m2, m3=None):
+    if m3 is None:
+        for i in range(len(m1)):
+            m1[0][i] = m1[0][i] + m2[0][i]
+            m1[1][i] = m1[1][i] + m2[1][i]
+            m1[2][i] = m1[2][i] + m2[2][i]
+            m1[3][i] = m1[3][i] + m2[3][i]
+    else:
+        for i in range(len(m1)):
+            m1[0][i] = m1[0][i] + m2[0][i] + m3[0][i]
+            m1[1][i] = m1[1][i] + m2[1][i] + m3[1][i]
+            m1[2][i] = m1[2][i] + m2[2][i] + m3[2][i]
+            m1[3][i] = m1[3][i] + m2[3][i] + m3[3][i]
+    return [m1[0], m1[1], m1[2], m1[3]]
 
 
-#
-# p_mx1 = (p_m_x_1_1, p_m_x_1_2, p_m_x_1_3, p_m_x_1_4, p_m_x_1_5)
-# p_mx2 = (p_m_x_2_1, p_m_x_2_2, p_m_x_2_3, p_m_x_2_4, p_m_x_2_5)
-# p_mx3 = (p_m_x_3_1, p_m_x_3_2, p_m_x_3_3, p_m_x_3_4, p_m_x_3_5)
-# p_px4 = (p_m_x_4_1, p_m_x_4_2, p_m_x_4_3, p_m_x_4_4,  p_m_x_4_5)
-#
-# p_my1 = (p_m_y_1_1,p_m_y_1_2, p_m_y_1_3, p_m_y_1_4, p_m_y_1_5)
-# p_my2 = (p_m_y_2_1, p_m_y_2_2, p_m_y_2_3, p_m_y_2_4, p_m_y_2_5)
-# p_my3 = (p_m_y_3_1, p_m_y_3_2,p_m_y_3_3, p_m_y_3_4, p_m_y_3_5)
-# p_my4 = (p_m_y_4_1, p_m_y_4_2, p_m_y_4_3, p_m_y_4_4,  p_m_y_4_5)
-#
-#
-# c_mx1 = (c_m_x_1_1, c_m_x_1_2, c_m_x_1_3, c_m_x_1_4, c_m_x_1_5)
-# c_mx2 = (c_m_x_2_1, c_m_x_2_2, c_m_x_2_3, c_m_x_2_4, c_m_x_2_5)
-# c_mx3 = (c_m_x_3_1, c_m_x_3_2, c_m_x_3_3, c_m_x_3_4, c_m_x_3_5)
-# c_mx4 = (c_m_x_4_1, c_m_x_4_2, c_m_x_4_3, c_m_x_4_4,  c_m_x_4_5)
-#
-# c_my1 = (c_m_y_1_1,c_m_y_1_2, c_m_y_1_3, c_m_y_1_4, c_m_y_1_5)
-# c_my2 = (c_m_y_2_1, c_m_y_2_2, c_m_y_2_3, c_m_y_2_4, c_m_y_2_5)
-# c_my3 = (c_m_y_3_1, c_m_y_3_2,c_m_y_3_3, c_m_y_3_4, c_m_y_3_5)
-# c_my4 = (c_m_y_4_1, c_m_y_4_2, c_m_y_4_3, c_m_y_4_4,  c_m_y_4_5)
-#
-#
-# c_px1 = (c_p_x_1_1, c_p_x_1_2, c_p_x_1_3, c_p_x_1_4, c_p_x_1_5)
-# c_px2 = (c_p_x_2_1, c_p_x_2_2, c_p_x_2_3, c_p_x_2_4, c_p_x_2_5)
-# c_px3 = (c_p_x_3_1, c_p_x_3_2, c_p_x_3_3, c_p_x_3_4, c_p_x_3_5)
-# c_px4 = (c_p_x_4_1, c_p_x_4_2, c_p_x_4_3, c_p_x_4_4,  c_p_x_4_5)
-#
-# c_py1 = (c_p_y_1_1,c_p_y_1_2, c_p_y_1_3, c_p_y_1_4, c_p_y_1_5)
-# c_py2 = (c_p_y_2_1, c_p_y_2_2, c_p_y_2_3, c_p_y_2_4, c_p_y_2_5)
-# c_py3 = (c_p_y_3_1, c_p_y_3_2,c_p_y_3_3, c_p_y_3_4, c_p_y_3_5)
-# c_py4 = (c_p_y_4_1, c_p_y_4_2, c_p_y_4_3, c_p_y_4_4,  c_p_y_4_5)
-#
+mte1 = [m.test_small1, m.test_small_1_welch, m.test_small_1_psd_welch, m.test_small_1_psd_multitaper]
+mte2 = [m.test_small2, m.test_small_2_welch, m.test_small_2_psd_welch, m.test_small_2_psd_multitaper]
+mte3 = [m.test_small3, m.test_small_3_welch, m.test_small_3_psd_welch, m.test_small_3_psd_multitaper]
+mte4 = [m.test_small4, m.test_small_4_welch, m.test_small_4_psd_welch, m.test_small_4_psd_multitaper]
+
+mtr1 = [m.train_small1, m.train_small_1_welch, m.train_small_1_psd_welch, m.train_small_1_psd_multitaper]
+mtr2 = [m.train_small2, m.train_small_2_welch, m.train_small_2_psd_welch, m.train_small_2_psd_multitaper]
+mtr3 = [m.train_small3, m.train_small_3_welch, m.train_small_3_psd_welch, m.train_small_3_psd_multitaper]
+mtr4 = [m.train_small4, m.train_small_4_welch, m.train_small_4_psd_welch, m.train_small_4_psd_multitaper]
+
+mv1 = [m.valid_small1, m.valid_small_1_welch, m.valid_small_1_psd_welch, m.valid_small_1_psd_multitaper]
+mv2 = [m.valid_small2, m.valid_small_2_welch, m.valid_small_2_psd_welch, m.valid_small_2_psd_multitaper]
+mv3 = [m.valid_small3, m.valid_small_3_welch, m.valid_small_3_psd_welch, m.valid_small_3_psd_multitaper]
+mv4 = [m.valid_small4, m.valid_small_4_welch, m.valid_small_4_psd_welch, m.valid_small_4_psd_multitaper]
+
+pte1 = [p.test_small1, p.test_small_1_welch, p.test_small_1_psd_welch, p.test_small_1_psd_multitaper]
+pte2 = [p.test_small2, p.test_small_2_welch, p.test_small_2_psd_welch, p.test_small_2_psd_multitaper]
+pte3 = [p.test_small3, p.test_small_3_welch, p.test_small_3_psd_welch, p.test_small_3_psd_multitaper]
+pte4 = [p.test_small4, p.test_small_4_welch, p.test_small_4_psd_welch, p.test_small_4_psd_multitaper]
+
+ptr1 = [p.train_small1, p.train_small_1_welch, p.train_small_1_psd_welch, p.train_small_1_psd_multitaper]
+ptr2 = [p.train_small2, p.train_small_2_welch, p.train_small_2_psd_welch, p.train_small_2_psd_multitaper]
+ptr3 = [p.train_small3, p.train_small_3_welch, p.train_small_3_psd_welch, p.train_small_3_psd_multitaper]
+ptr4 = [p.train_small4, p.train_small_4_welch, p.train_small_4_psd_welch, p.train_small_4_psd_multitaper]
+
+pv1 = [p.valid_small1, p.valid_small_1_welch, p.valid_small_1_psd_welch, p.valid_small_1_psd_multitaper]
+pv2 = [p.valid_small2, p.valid_small_2_welch, p.valid_small_2_psd_welch, p.valid_small_2_psd_multitaper]
+pv3 = [p.valid_small3, p.valid_small_3_welch, p.valid_small_3_psd_welch, p.valid_small_3_psd_multitaper]
+pv4 = [p.valid_small4, p.valid_small_4_welch, p.valid_small_4_psd_welch, p.valid_small_4_psd_multitaper]
+
+cte1 = [c.test_small1, c.test_small_1_welch, c.test_small_1_psd_welch, c.test_small_1_psd_multitaper]
+cte2 = [c.test_small2, c.test_small_2_welch, c.test_small_2_psd_welch, c.test_small_2_psd_multitaper]
+cte3 = [c.test_small3, c.test_small_3_welch, c.test_small_3_psd_welch, c.test_small_3_psd_multitaper]
+cte4 = [c.test_small4, c.test_small_4_welch, c.test_small_4_psd_welch, c.test_small_4_psd_multitaper]
+
+ctr1 = [c.train_small1, c.train_small_1_welch, c.train_small_1_psd_welch, c.train_small_1_psd_multitaper]
+ctr2 = [c.train_small2, c.train_small_2_welch, c.train_small_2_psd_welch, c.train_small_2_psd_multitaper]
+ctr3 = [c.train_small3, c.train_small_3_welch, c.train_small_3_psd_welch, c.train_small_3_psd_multitaper]
+ctr4 = [c.train_small4, c.train_small_4_welch, c.train_small_4_psd_welch, c.train_small_4_psd_multitaper]
+
+cv1 = [c.valid_small1, c.valid_small_1_welch, c.valid_small_1_psd_welch, c.valid_small_1_psd_multitaper]
+cv2 = [c.valid_small2, c.valid_small_2_welch, c.valid_small_2_psd_welch, c.valid_small_2_psd_multitaper]
+cv3 = [c.valid_small3, c.valid_small_3_welch, c.valid_small_3_psd_welch, c.valid_small_3_psd_multitaper]
+cv4 = [c.valid_small4, c.valid_small_4_welch, c.valid_small_4_psd_welch, c.valid_small_4_psd_multitaper]
+
+p_m_x_1_1, p_m_x_1_2, p_m_x_1_3, p_m_x_1_4 = combine_monkey(mte1, pte1)
+p_m_x_2_1, p_m_x_2_2, p_m_x_2_3, p_m_x_2_4 = combine_monkey(mte2, pte2)
+p_m_x_3_1, p_m_x_3_2, p_m_x_3_3, p_m_x_3_4 = combine_monkey(mte3, pte3)
+p_m_x_4_1, p_m_x_4_2, p_m_x_4_3, p_m_x_4_4 = combine_monkey(mte4, pte4)
+
+p_m_y_1_1, p_m_y_1_2, p_m_y_1_3, p_m_y_1_4 = combine_monkey(mtr1, ptr1)
+p_m_y_2_1, p_m_y_2_2, p_m_y_2_3, p_m_y_2_4 = combine_monkey(mtr2, ptr2)
+p_m_y_3_1, p_m_y_3_2, p_m_y_3_3, p_m_y_3_4 = combine_monkey(mtr3, ptr3)
+p_m_y_4_1, p_m_y_4_2, p_m_y_4_3, p_m_y_4_4 = combine_monkey(mtr4, ptr4)
+
+p_m_z_1_1, p_m_z_1_2, p_m_z_1_3, p_m_z_1_4 = combine_monkey(mv1, pv1)
+p_m_z_2_1, p_m_z_2_2, p_m_z_2_3, p_m_z_2_4 = combine_monkey(mv2, pv2)
+p_m_z_3_1, p_m_z_3_2, p_m_z_3_3, p_m_z_3_4 = combine_monkey(mv3, pv3)
+p_m_z_4_1, p_m_z_4_2, p_m_z_4_3, p_m_z_4_4 = combine_monkey(mv4, pv4)
+
+c_m_x_1_1, c_m_x_1_2, c_m_x_1_3, c_m_x_1_4 = combine_monkey(mte1, cte1)
+c_m_x_2_1, c_m_x_2_2, c_m_x_2_3, c_m_x_2_4 = combine_monkey(mte2, cte2)
+c_m_x_3_1, c_m_x_3_2, c_m_x_3_3, c_m_x_3_4 = combine_monkey(mte3, cte3)
+c_m_x_4_1, c_m_x_4_2, c_m_x_4_3, c_m_x_4_4 = combine_monkey(mte4, cte4)
+
+c_m_y_1_1, c_m_y_1_2, c_m_y_1_3, c_m_y_1_4 = combine_monkey(mtr1, ctr1)
+c_m_y_2_1, c_m_y_2_2, c_m_y_2_3, c_m_y_2_4 = combine_monkey(mtr2, ctr2)
+c_m_y_3_1, c_m_y_3_2, c_m_y_3_3, c_m_y_3_4 = combine_monkey(mtr3, ctr3)
+c_m_y_4_1, c_m_y_4_2, c_m_y_4_3, c_m_y_4_4 = combine_monkey(mtr4, ctr4)
+
+c_m_z_1_1, c_m_z_1_2, c_m_z_1_3, c_m_z_1_4 = combine_monkey(mv1, cv1)
+c_m_z_2_1, c_m_z_2_2, c_m_z_2_3, c_m_z_2_4 = combine_monkey(mv2, cv2)
+c_m_z_3_1, c_m_z_3_2, c_m_z_3_3, c_m_z_3_4 = combine_monkey(mv3, cv3)
+c_m_z_4_1, c_m_z_4_2, c_m_z_4_3, c_m_z_4_4 = combine_monkey(mv4, cv4)
+
+c_p_x_1_1, c_p_x_1_2, c_p_x_1_3, c_p_x_1_4 = combine_monkey(pte1, cte1)
+c_p_x_2_1, c_p_x_2_2, c_p_x_2_3, c_p_x_2_4 = combine_monkey(pte2, cte2)
+c_p_x_3_1, c_p_x_3_2, c_p_x_3_3, c_p_x_3_4 = combine_monkey(pte3, cte3)
+c_p_x_4_1, c_p_x_4_2, c_p_x_4_3, c_p_x_4_4 = combine_monkey(pte4, cte4)
+
+c_p_y_1_1, c_p_y_1_2, c_p_y_1_3, c_p_y_1_4 = combine_monkey(ptr1, ctr1)
+c_p_y_2_1, c_p_y_2_2, c_p_y_2_3, c_p_y_2_4 = combine_monkey(ptr2, ctr2)
+c_p_y_3_1, c_p_y_3_2, c_p_y_3_3, c_p_y_3_4 = combine_monkey(ptr3, ctr3)
+c_p_y_4_1, c_p_y_4_2, c_p_y_4_3, c_p_y_4_4 = combine_monkey(ptr4, ctr4)
+
+c_p_z_1_1, c_p_z_1_2, c_p_z_1_3, c_p_z_1_4 = combine_monkey(pv1, cv1)
+c_p_z_2_1, c_p_z_2_2, c_p_z_2_3, c_p_z_2_4 = combine_monkey(pv2, cv2)
+c_p_z_3_1, c_p_z_3_2, c_p_z_3_3, c_p_z_3_4 = combine_monkey(pv3, cv3)
+c_p_z_4_1, c_p_z_4_2, c_p_z_4_3, c_p_z_4_4 = combine_monkey(pv4, cv4)
+
+m_c_p_x_1_1, m_c_p_x_1_2, m_c_p_x_1_3, m_c_p_x_1_4 = combine_monkey(pte1, cte1, mte1)
+m_c_p_x_2_1, m_c_p_x_2_2, m_c_p_x_2_3, m_c_p_x_2_4 = combine_monkey(pte2, cte2, mte2)
+m_c_p_x_3_1, m_c_p_x_3_2, m_c_p_x_3_3, m_c_p_x_3_4 = combine_monkey(pte3, cte3, mte3)
+m_c_p_x_4_1, m_c_p_x_4_2, m_c_p_x_4_3, m_c_p_x_4_4 = combine_monkey(pte4, cte4, mte4)
+
+m_c_p_y_1_1, m_c_p_y_1_2, m_c_p_y_1_3, m_c_p_y_1_4 = combine_monkey(ptr1, ctr1, mtr1)
+m_c_p_y_2_1, m_c_p_y_2_2, m_c_p_y_2_3, m_c_p_y_2_4 = combine_monkey(ptr2, ctr2, mtr2)
+m_c_p_y_3_1, m_c_p_y_3_2, m_c_p_y_3_3, m_c_p_y_3_4 = combine_monkey(ptr3, ctr3, mtr3)
+m_c_p_y_4_1, m_c_p_y_4_2, m_c_p_y_4_3, m_c_p_y_4_4 = combine_monkey(ptr4, ctr4, mtr4)
+
+m_c_p_z_1_1, m_c_p_z_1_2, m_c_p_z_1_3, m_c_p_z_1_4 = combine_monkey(pv1, cv1, mv1)
+m_c_p_z_2_1, m_c_p_z_2_2, m_c_p_z_2_3, m_c_p_z_2_4 = combine_monkey(pv2, cv2, mv2)
+m_c_p_z_3_1, m_c_p_z_3_2, m_c_p_z_3_3, m_c_p_z_3_4 = combine_monkey(pv3, cv3, mv3)
+m_c_p_z_4_1, m_c_p_z_4_2, m_c_p_z_4_3, m_c_p_z_4_4 = combine_monkey(pv4, cv4, mv4)
+
+p_mx1 = (p_m_x_1_1, p_m_x_1_2, p_m_x_1_3, p_m_x_1_4)
+p_mx2 = (p_m_x_2_1, p_m_x_2_2, p_m_x_2_3, p_m_x_2_4)
+p_mx3 = (p_m_x_3_1, p_m_x_3_2, p_m_x_3_3, p_m_x_3_4)
+p_px4 = (p_m_x_4_1, p_m_x_4_2, p_m_x_4_3, p_m_x_4_4)
+
+p_my1 = (p_m_y_1_1, p_m_y_1_2, p_m_y_1_3, p_m_y_1_4)
+p_my2 = (p_m_y_2_1, p_m_y_2_2, p_m_y_2_3, p_m_y_2_4)
+p_my3 = (p_m_y_3_1, p_m_y_3_2, p_m_y_3_3, p_m_y_3_4)
+p_my4 = (p_m_y_4_1, p_m_y_4_2, p_m_y_4_3, p_m_y_4_4)
+
+c_mx1 = (c_m_x_1_1, c_m_x_1_2, c_m_x_1_3, c_m_x_1_4)
+c_mx2 = (c_m_x_2_1, c_m_x_2_2, c_m_x_2_3, c_m_x_2_4)
+c_mx3 = (c_m_x_3_1, c_m_x_3_2, c_m_x_3_3, c_m_x_3_4)
+c_mx4 = (c_m_x_4_1, c_m_x_4_2, c_m_x_4_3, c_m_x_4_4)
+
+c_my1 = (c_m_y_1_1, c_m_y_1_2, c_m_y_1_3, c_m_y_1_4)
+c_my2 = (c_m_y_2_1, c_m_y_2_2, c_m_y_2_3, c_m_y_2_4)
+c_my3 = (c_m_y_3_1, c_m_y_3_2, c_m_y_3_3, c_m_y_3_4)
+c_my4 = (c_m_y_4_1, c_m_y_4_2, c_m_y_4_3, c_m_y_4_4)
+
+c_px1 = (c_p_x_1_1, c_p_x_1_2, c_p_x_1_3, c_p_x_1_4)
+c_px2 = (c_p_x_2_1, c_p_x_2_2, c_p_x_2_3, c_p_x_2_4)
+c_px3 = (c_p_x_3_1, c_p_x_3_2, c_p_x_3_3, c_p_x_3_4)
+c_px4 = (c_p_x_4_1, c_p_x_4_2, c_p_x_4_3, c_p_x_4_4)
+
+c_py1 = (c_p_y_1_1, c_p_y_1_2, c_p_y_1_3, c_p_y_1_4)
+c_py2 = (c_p_y_2_1, c_p_y_2_2, c_p_y_2_3, c_p_y_2_4)
+c_py3 = (c_p_y_3_1, c_p_y_3_2, c_p_y_3_3, c_p_y_3_4)
+c_py4 = (c_p_y_4_1, c_p_y_4_2, c_p_y_4_3, c_p_y_4_4)
+
+m_c_px1 = (c_p_x_1_1, c_p_x_1_2, c_p_x_1_3, c_p_x_1_4)
+m_c_px2 = (c_p_x_2_1, c_p_x_2_2, c_p_x_2_3, c_p_x_2_4)
+m_c_px3 = (c_p_x_3_1, c_p_x_3_2, c_p_x_3_3, c_p_x_3_4)
+m_c_px4 = (c_p_x_4_1, c_p_x_4_2, c_p_x_4_3, c_p_x_4_4)
+
+m_c_py1 = (c_p_y_1_1, c_p_y_1_2, c_p_y_1_3, c_p_y_1_4)
+m_c_py2 = (c_p_y_2_1, c_p_y_2_2, c_p_y_2_3, c_p_y_2_4)
+m_c_py3 = (c_p_y_3_1, c_p_y_3_2, c_p_y_3_3, c_p_y_3_4)
+m_c_py4 = (c_p_y_4_1, c_p_y_4_2, c_p_y_4_3, c_p_y_4_4)
+
+m_c_pz1 = (c_p_z_1_1, c_p_z_1_2, c_p_z_1_3, c_p_z_1_4)
+m_c_pz2 = (c_p_z_2_1, c_p_z_2_2, c_p_z_2_3, c_p_z_2_4)
+m_c_pz3 = (c_p_z_3_1, c_p_z_3_2, c_p_z_3_3, c_p_z_3_4)
+m_c_pz4 = (c_p_z_4_1, c_p_z_4_2, c_p_z_4_3, c_p_z_4_4)
 
 
+def plot_scatter_helper(data, f1, f2):
+    x = []
+    y = []
+    for i in range(len(data)):
+        x.append(data[i][f1])
+        y.append(data[i][f2])
+    std_y = np.std(y)
+    std_x = np.std(x)
+    x_final = []
+    y_final = []
+    # for i in range(len(data)):
+    #     if np.mean(x) + std_x> data[i][f1] > np.mean(x) - std_x:
+    #         if np.mean(y) + std_y> data[i][f2] > np.mean(y) - std_y:
+    #             x_final.append(data[i][f1])
+    #             y_final.append(data[i][f2])
+    plt.yscale('log')
+    plt.scatter(x, y, linewidths=0.5, s=1)
+    # plt.scatter(x_final, y_final, linewidths=0.5, s=1)
 
-# c_m_py1 =
-# c_m_py2 =
-# c_m_py3 =
-# c_m_py4 =
+
+def plot_scatter(data, monkey, f1, f2):
+    for i in data:
+        plot_scatter_helper(i, f1, f2)
+    plt.title(str(monkey) + "- feature " + str(f1)+ " against  feature "+ str(f2))
+    plt.legend(labels=['area1', 'area2', 'area3', 'area4'], title='areas')
+    plt.xlabel("feature " + str(f1))
+    plt.ylabel("feature " + str(f2))
+
+    plt.show()
+
+# #
+# mx_train, my_train = get_x_y(cy1, cy2, cy3, cy4)
+# f1, f2 = learn.mutualInfo(mx_train, my_train)
+# scatter = [c.train1, c.train2, c.train3, c.train4]
+# monkey = 'Carmen'
+# plot_scatter(scatter, monkey, f1, f2)
+
+#
+# mx_train, my_train = get_x_y(my1, my2, my3, my4)
+# f1, f2 = learn.mutualInfo(mx_train, my_train)
+# scatter = [m.train1, m.train2, m.train3, m.train4]
+# monkey = 'Menta'
+# plot_scatter(scatter, monkey, f1, f2)
+
+#
+# mx_train, my_train = get_x_y(py1, py2, py3, py4)
+# f1, f2 = learn.mutualInfo(mx_train, my_train)
+# scatter = [p.train1, p.train2, p.train3, p.train4]
+# monkey = 'Penny'
+# plot_scatter(scatter, monkey, f1, f2)
+
 # if __name__ == '__main__':
-# #     # carmen + menta
-#     c_m_x_train, c_m_y_train = get_x_y(c_my1, c_my2, c_my3, c_my4)
-#     # c_m_x_test, c_m_y_test = get_x_y(c_mx1, c_mx2, c_mx3, c_mx4)
-#     px_test, py_test = get_x_y(px1, px2, px3,px4)
-#     get_result(c_m_x_train, c_m_y_train, px_test, py_test, "carmen + menta")
+#     # # # carmen menta penny
+#     mx_train, my_train = get_x_y(m_c_py1, m_c_py2, m_c_py3, m_c_py4)
+#     mx_test, my_test = get_x_y(m_c_px1, m_c_px2, m_c_px3, m_c_px4)
+#     mx_valid, my_valid = get_x_y(m_c_pz1, m_c_pz2, m_c_pz3, m_c_pz4)
+#     get_result(mx_train, my_train, mx_valid, my_valid, "ALL monkeys - validation")
+# get_result(mx_train, my_train, mx_test, my_test, "menta + carmen + penny")
 
+# if __name__ == '__main__':
+# # # # menta to carmen
+#     mx_train, my_train = get_x_y(my1, my2, my3, my4)
+#     cx_test, cy_test = get_x_y(py1, py2, py3, py4)
+#     # cx_valid, cy_valid = get_x_y(cz1, cz2, cz3, cz4)
+#     # get_result(cx_train, cy_train, cx_valid, cy_valid, "carmen - validation")
+#     get_result(mx_train, my_train, cx_test, cy_test, "menta - train, carmen - test")
+
+# if __name__ == '__main__':
+# # #     # carmen + menta
+#
+#     c_m_x_train, c_m_y_train = get_x_y(c_my1, c_my2, c_my3, c_my4)
+#     px_test, py_test = get_x_y(y1, y2, y3, y4)
+#
+#     # px_valid, py_valid = get_x_y(pz1, pz2, pz3,pz4)
+#     # get_result(c_m_x_train, c_m_y_train, px_valid, py_valid, "carmen + menta - validation")
+#     get_result(c_m_x_train, c_m_y_train, px_test, py_test, "carmen + menta")
+# #
 # if __name__ == '__main__':
 # #     # penny+ menta
-#     p_m_x_train, c_m_y_train = get_x_y(p_my1, p_my2, p_my3, p_my4)
+#     p_m_x_train, p_m_y_train = get_x_y(p_my1, p_my2, p_my3, p_my4)
 #     # c_m_x_test, c_m_y_test = get_x_y(c_mx1, c_mx2, c_mx3, c_mx4)
 #     cx_test, cy_test = get_x_y(cx1, cx2, cx3,cx4)
-# #     get_result(p_m_x_train, c_m_y_train, cx_test, cy_test, "penny + menta")
+#     # get_result(p_m_x_train, p_m_y_train, cx_test, cy_test, "pennny + menta")
+#     cx_valid, cy_valid = get_x_y(cz1, cz2, cz3, cz4)
+#     get_result(p_m_x_train, p_m_y_train, cx_valid, cy_valid, "pennny + menta - validation")
+# if __name__ == '__main__':
+# #    carmen+ penny
+#
+#     get_result(c_px_train, c_py_train, cx_test, cy_test, "carmen + penny")
+# get_result(c_px_train, c_py_train, mx_valid, my_valid, "carmen + penny - validation")
+
 #
 # if __name__ == '__main__':
-# #     menta to carmen
-#     cx_train, cy_train = get_x_y(my1, my2, my3, my4)
-#     cx_test, cy_test = get_x_y(cx1, cx2, cx3, cx4)
-#     get_result(cx_train, cy_train, cx_test, cy_test, "menta to carmen")
-
-
-
-
-
-# if __name__ == '__main__':
-#     # carmen
+#     #     # carmen
 #     cx_train, cy_train = get_x_y(cy1, cy2, cy3, cy4)
 #     cx_test, cy_test = get_x_y(cx1, cx2, cx3, cx4)
 #     cx_valid, cy_valid = get_x_y(cz1, cz2, cz3, cz4)
 #     get_result(cx_train, cy_train, cx_valid, cy_valid, "carmen - validation")
-    # get_result(cx_train, cy_train, cx_test, cy_test, "carmen")
+#     get_result(cx_train, cy_train, cx_test, cy_test, "carmen")
+# # # # # # # # # #
+# # if __name__ == '__main__':
+# # # # # menta
+#     mx_train, my_train = get_x_y(my1, my2, my3, my4)
+#     mx_test, my_test = get_x_y(mx1, mx2, mx3,mx4)
+#     mx_valid, my_valid = get_x_y(mz1, mz2, mz3, mz4)
+#     get_result(mx_train, my_train, mx_valid, my_valid, "menta - validation")
+#     get_result(mx_train, my_train, mx_test, my_test, "menta")
 # # # #
-if __name__ == '__main__':
-# # # menta
-    mx_train, my_train = get_x_y(my1, my2, my3, my4)
-    mx_test, my_test = get_x_y(mx1, mx2, mx3,mx4)
-    mx_valid, my_valid = get_x_y(mz1, mz2, mz3, mz4)
-    get_result(mx_train, my_train, mx_valid, my_valid, "menta - validation")
-    # get_result(mx_train, my_train, mx_test, my_test, "menta")
-#
 # if __name__ == '__main__':
 # # penny
 #     mx_train, my_train = get_x_y(py1, py2, py3, py4)
 #     mx_test, my_test = get_x_y(px1, px2, px3,px4)
 #     mx_valid, my_valid = get_x_y(pz1, pz2, pz3,pz4)
-#     # get_result(mx_train, my_train, mx_valid, my_valid, "penny - validation")
-#     get_result(mx_train, my_train, mx_test, my_test, "penny")
+#     get_result(mx_train, my_train, mx_valid, my_valid, "penny - validation")
 #
+#     # get_result(mx_train, my_train, mx_test, my_test, "penny")

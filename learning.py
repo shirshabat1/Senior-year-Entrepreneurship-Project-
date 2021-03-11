@@ -7,7 +7,6 @@ import librosa
 from sklearn import svm
 from sklearn import metrics
 
-
 import matplotlib.pyplot as plt
 import featureResearch as feat
 import neurokit2 as nk
@@ -17,8 +16,8 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis as QDA
 from sklearn.ensemble import AdaBoostClassifier
 
 from sklearn.ensemble import RandomForestClassifier
-SAMPLE_RATE = 1000
 
+SAMPLE_RATE = 1000
 
 
 def extract_mel_chroma_first_fft_feature(X):
@@ -33,11 +32,14 @@ def extract_mel_chroma_first_fft_feature(X):
     fft = [fft[0]]
 
     return chroma, mel, fft
+
+
 def extract_welch(X):
     X = X.astype(float)
     welch = nk.signal_psd(X, method="welch", min_frequency=1, max_frequency=20, show=False)["Power"]
     welch = np.array(welch)
     return welch
+
 
 def extract_multitaper(X):
     multitaper = nk.signal_psd(X, method="multitapers", max_frequency=20, show=False)["Power"]
@@ -51,6 +53,7 @@ def extract_hilbert(X):
     analytic_signal = [np.linalg.norm(analytic_signal)]
     return analytic_signal
 
+
 def extract_cor(X):
     X = X.astype(float)
     cor = np.corrcoef(X, X)
@@ -58,10 +61,12 @@ def extract_cor(X):
     # print("cor: ", np.shape(cor))
     return cor
 
+
 def extract_entropy(X):
     sample = nk.entropy_sample(X)
     entropy = nk.entropy_approximate(X)
     return [sample, entropy]
+
 
 def extract_hdi(X):
     X = X.astype(float)
@@ -70,17 +75,17 @@ def extract_hdi(X):
     return hdi
 
 
-
-
 def extract_burg(X):
     X = X.astype(float)
     burg = nk.signal_psd(X, method="burg", min_frequency=1, max_frequency=20, order=10, show=False)["Power"]
     burg = np.array(burg)
-    return  burg
+    return burg
+
 
 def extract_band(X, method):
     X = X.astype(float)
     return get_band(X, method)
+
 
 def get_features(area):
     """
@@ -110,12 +115,14 @@ def get_additional_features(area, feature):
         features.append(y)
     return np.array(features)
 
+
 def get_specific_additional_features(area, method):
     features = []
     for x in tqdm(area):
         y = extract_band(x, method)
         features.append(y)
     return np.array(features)
+
 
 def bandpower(data, sf, band, window_sec=None, relative=False):
     """Compute the average power of the signal x in a specific frequency band.
@@ -166,6 +173,8 @@ def bandpower(data, sf, band, window_sec=None, relative=False):
     if relative:
         bp /= simps(psd, dx=freq_res)
     return bp
+
+
 #
 def get_band(X, method):
     fft = np.fft.fft(X) / len(X)
@@ -175,7 +184,7 @@ def get_band(X, method):
     psd_average.append(y)
     y = np.mean(np.array(nk.signal_psd(fft, method=method, min_frequency=4, max_frequency=7, show=False)["Power"]))
     psd_average.append(y)
-    y = np.mean( np.array(nk.signal_psd(fft, method=method, min_frequency=8, max_frequency=12, show=False)["Power"]))
+    y = np.mean(np.array(nk.signal_psd(fft, method=method, min_frequency=8, max_frequency=12, show=False)["Power"]))
     psd_average.append(y)
     y = np.mean(np.array(nk.signal_psd(fft, method=method, min_frequency=13, max_frequency=22, show=False)["Power"]))
     psd_average.append(y)
@@ -228,8 +237,6 @@ def SVM(x_train, y_train, x_test, y_test):
     print(metrics.confusion_matrix(y_test, y_pred))
 
 
-
-
 def SVMovr(x_train, y_train, x_test, y_test):
     clf = svm.SVC(decision_function_shape='ovr')
     clf.fit(x_train, y_train)
@@ -239,8 +246,7 @@ def SVMovr(x_train, y_train, x_test, y_test):
     print(metrics.confusion_matrix(y_test, y_pred))
 
 
-
-def linearSVC(x_train, y_train, x_test, y_test):
+def linearSVC(x_train, y_train, x_test, y_test, monkey):
     clf = svm.LinearSVC()
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
@@ -249,11 +255,12 @@ def linearSVC(x_train, y_train, x_test, y_test):
     print("Linear SVC Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("linearSVC confusion: ")
     print(metrics.confusion_matrix(y_test, y_pred))
+    metrics.plot_confusion_matrix(clf, x_test, y_test)
+    plt.title(str(monkey) + ": confusion_matrix -  LinearSVC algorithm")
+    plt.show()
 
 
-
-
-def randomForest(x_train, y_train, x_test, y_test):
+def randomForest(x_train, y_train, x_test, y_test, monkey):
     """Random Forest Accuracy: 0.6769767441860465"""
     clf = RandomForestClassifier(
         max_depth=50,
@@ -269,18 +276,18 @@ def randomForest(x_train, y_train, x_test, y_test):
     print("Random Forest Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("confusion_matrix Random Forest Accuracy:")
     print(metrics.confusion_matrix(y_test, y_pred))
-
+    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format= '.0%')
+    plt.title(str(monkey) + ": confusion_matrix - Random Forest algorithm")
+    plt.show()
 
 
 def adaBoost(x_train, y_train, x_test, y_test):
-    abc = AdaBoostClassifier(n_estimators=200,learning_rate=1)
+    abc = AdaBoostClassifier(n_estimators=200, learning_rate=1)
     abc.fit(x_train, y_train)
     y_pred = abc.predict(x_test)
     print("boost Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("boost confusion: ")
     print(metrics.confusion_matrix(y_test, y_pred))
-
-
 
 
 def GradientBoosting(x_train, y_train, x_test, y_test):
@@ -292,11 +299,8 @@ def GradientBoosting(x_train, y_train, x_test, y_test):
     print(metrics.confusion_matrix(y_test, y_pred))
 
 
-
-
-def KNeighbors(x_train, y_train, x_test, y_test):
+def KNeighbors(x_train, y_train, x_test, y_test, monkey):
     """
-    KNeighbors Accuracy: 0.6909302325581396
     """
     clf = KNeighborsClassifier(n_neighbors=3)
     clf.fit(x_train, y_train)
@@ -305,21 +309,25 @@ def KNeighbors(x_train, y_train, x_test, y_test):
     print("KNeighbors Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("KNeighbors confusion: ")
     print(metrics.confusion_matrix(y_test, y_pred))
+    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format= '.0%' )
+    plt.title(str(monkey) + ": confusion_matrix - KNeighbors algorithm")
+    plt.show()
 
 
-
-def lda(x_train, y_train, x_test, y_test):
+def lda(x_train, y_train, x_test, y_test, monkey):
     clf = LDA()
     clf.fit(x_train, y_train)
-    LDA(n_components=None, priors=None, shrinkage=None, solver='svd',store_covariance=False, tol=0.0001)
+    LDA(n_components=None, priors=None, shrinkage=None, solver='svd', store_covariance=False, tol=0.0001)
     y_pred = clf.predict(x_test)
     print("lda Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("lda confusion: ")
     print(metrics.confusion_matrix(y_test, y_pred))
+    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format= '.0%')
+    plt.title(str(monkey) + ": confusion_matrix - Lda algorithm")
+    plt.show()
 
 
-
-def qda(x_train, y_train, x_test, y_test):
+def qda(x_train, y_train, x_test, y_test, monkey):
     clf = QDA()
     clf.fit(x_train, y_train)
     QDA(priors=None, reg_param=0.0)
@@ -329,10 +337,12 @@ def qda(x_train, y_train, x_test, y_test):
     print("qda Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("qda confusion: ")
     print(metrics.confusion_matrix(y_test, y_pred))
+    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format= '.0%')
+    plt.title(str(monkey) + ": confusion_matrix - Qda algorithm")
+    plt.show()
 
 
-
-def mutualInfo(x, y, monkey):
+def mutualInfo(x, y, monkey = None):
     mi = mutual_info_classif(x, y, discrete_features=False)
     index1 = np.argmax(mi)
     old = mi[index1]
@@ -340,16 +350,16 @@ def mutualInfo(x, y, monkey):
     index2 = np.argmax(mi)
 
     mi[index1] = old
-
-    plt.scatter(range(len(mi)), mi)
-    plt.xlabel("feature index")
-    plt.ylabel("mutual info")
-    plt.title(monkey)
-    plt.show()
-
-    print(index1)
-    print(index2)
-
+    #
+    # plt.scatter(range(len(mi)), mi)
+    # plt.xlabel("feature index")
+    # plt.ylabel("mutual info")
+    # plt.title(monkey)
+    # plt.show()
+    #
+    # print(index1)
+    # print(index2)
+    return index1, index2
 
 
 def getFeaturesAndNormalize(data):
@@ -361,4 +371,3 @@ def getFeaturesAndNormalize(data):
         feature = feat.extract_feature(feat.dc_normalize(sig))
         features.append(feature)
     return np.array(features)
-
