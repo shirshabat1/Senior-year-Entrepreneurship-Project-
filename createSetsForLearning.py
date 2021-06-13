@@ -233,20 +233,3 @@ train, test, valid = data_for_big_area(y, lst_dates)
 print(np.shape(train))
 print(np.shape(test))
 
-# y= data_size(lst1_penny, lst2_penny, lst3_penny, lst4_penny)
-# shared_data = shared_dates_level(penny_full_table)
-# lst_dates = extract_signals(shared_data, lst1_penny)
-# train, test, valid = data_for_big_area(y, lst_dates)
-# print(np.shape(train))
-# print(np.shape(test))
-# data_for_big_area(y, lst2_dates)
-
-# save_data(train, test, valid, "menta", 1)
-#
-#
-# dic_1 = dict()
-# dic_1[0] = 1
-# dic_1[1] = 2
-# values_1 = dic_1.values()
-# p = values_1 + values_1
-# print(p)

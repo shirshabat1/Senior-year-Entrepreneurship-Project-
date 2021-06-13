@@ -18,7 +18,13 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 
 SAMPLE_RATE = 1000
+from sklearn.metrics import confusion_matrix
 
+def confusion_matrix_plot(y_true, y_pred):
+    graph = confusion_matrix(y_true, y_pred, normalize=True)
+    print(graph)
+    # plt.show()
+    # graph = confusion_matrix(y_true, y_pred, normalize=True)
 
 def extract_mel_chroma_first_fft_feature(X):
     X = X.astype(float)
@@ -29,7 +35,7 @@ def extract_mel_chroma_first_fft_feature(X):
     # print("mel :", np.shape(mel))
     fft = np.fft.fft(X) / len(X)
     fft = np.abs(fft[: len(X) // 7])
-    fft = [fft[0]]
+    # fft = [fft[0]]
 
     return chroma, mel, fft
 
@@ -102,9 +108,7 @@ def get_features(area):
 def get_additional_features(area, feature):
     features = []
     for x in tqdm(area):
-        if feature == 'cor':
-            y = extract_cor(x)
-        elif feature == 'welch':
+        if feature == 'welch':
             y = extract_welch(x)
         elif feature == 'entropy':
             y = extract_entropy(x)
@@ -276,7 +280,7 @@ def randomForest(x_train, y_train, x_test, y_test, monkey):
     print("Random Forest Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("confusion_matrix Random Forest Accuracy:")
     print(metrics.confusion_matrix(y_test, y_pred))
-    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format= '.0%')
+    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format='.0%')
     plt.title(str(monkey) + ": confusion_matrix - Random Forest algorithm")
     plt.show()
 
@@ -305,11 +309,10 @@ def KNeighbors(x_train, y_train, x_test, y_test, monkey):
     clf = KNeighborsClassifier(n_neighbors=3)
     clf.fit(x_train, y_train)
     y_pred = clf.predict(x_test)
-    # y_pred = clf.predict(x_train)
     print("KNeighbors Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("KNeighbors confusion: ")
     print(metrics.confusion_matrix(y_test, y_pred))
-    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format= '.0%' )
+    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format='.0%')
     plt.title(str(monkey) + ": confusion_matrix - KNeighbors algorithm")
     plt.show()
 
@@ -322,7 +325,7 @@ def lda(x_train, y_train, x_test, y_test, monkey):
     print("lda Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("lda confusion: ")
     print(metrics.confusion_matrix(y_test, y_pred))
-    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format= '.0%')
+    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format='.0%')
     plt.title(str(monkey) + ": confusion_matrix - Lda algorithm")
     plt.show()
 
@@ -337,21 +340,32 @@ def qda(x_train, y_train, x_test, y_test, monkey):
     print("qda Accuracy:", metrics.accuracy_score(y_test, y_pred))
     print("qda confusion: ")
     print(metrics.confusion_matrix(y_test, y_pred))
-    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format= '.0%')
+    metrics.plot_confusion_matrix(clf, x_test, y_test, normalize='true', values_format='.0%')
     plt.title(str(monkey) + ": confusion_matrix - Qda algorithm")
     plt.show()
 
 
-def mutualInfo(x, y, monkey = None):
+def mutualInfo(x, y, monkey=None):
     mi = mutual_info_classif(x, y, discrete_features=False)
+    for i in range(128):
+        if i != 5:
+            mi[12 + i] = -1
     index1 = np.argmax(mi)
+
     old = mi[index1]
     mi[index1] = -1
     index2 = np.argmax(mi)
 
     mi[index1] = old
-    #
+
     # plt.scatter(range(len(mi)), mi)
+    # plt.plot(range(len(mi)), mi)
+    # plt.axvline(x=12, linewidth=2, color='gold')
+    # plt.axvline(x=140, linewidth=2, color='#d62728')
+    # plt.axvline(x=141, linewidth=2, color='navy')
+    # plt.axvline(x=218, linewidth=2, color='salmon')
+    # plt.axvline(x=226, linewidth=2, color='green')
+
     # plt.xlabel("feature index")
     # plt.ylabel("mutual info")
     # plt.title(monkey)
@@ -359,6 +373,7 @@ def mutualInfo(x, y, monkey = None):
     #
     # print(index1)
     # print(index2)
+
     return index1, index2
 
 

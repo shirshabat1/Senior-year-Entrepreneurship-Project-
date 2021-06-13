@@ -8,6 +8,9 @@ import functools
 import matplotlib.pyplot as plt
 
 
+
+
+
 def get_x_y(x1, x2, x3, x4):
     test_1 = np.concatenate(x1, axis=1)
     test_2 = np.concatenate(x2, axis=1)
@@ -257,113 +260,19 @@ def plot_scatter_helper(data, f1, f2):
     for i in range(len(data)):
         x.append(data[i][f1])
         y.append(data[i][f2])
-    std_y = np.std(y)
-    std_x = np.std(x)
-    x_final = []
-    y_final = []
-    # for i in range(len(data)):
-    #     if np.mean(x) + std_x> data[i][f1] > np.mean(x) - std_x:
-    #         if np.mean(y) + std_y> data[i][f2] > np.mean(y) - std_y:
-    #             x_final.append(data[i][f1])
-    #             y_final.append(data[i][f2])
-    plt.yscale('log')
+    # plt.yscale('log')
     plt.scatter(x, y, linewidths=0.5, s=1)
-    # plt.scatter(x_final, y_final, linewidths=0.5, s=1)
 
 
 def plot_scatter(data, monkey, f1, f2):
     for i in data:
+        print(i)
         plot_scatter_helper(i, f1, f2)
     plt.title(str(monkey) + "- feature " + str(f1)+ " against  feature "+ str(f2))
     plt.legend(labels=['area1', 'area2', 'area3', 'area4'], title='areas')
     plt.xlabel("feature " + str(f1))
     plt.ylabel("feature " + str(f2))
-
+    plt.yscale('log')
+    plt.xscale('log')
     plt.show()
 
-# #
-# mx_train, my_train = get_x_y(cy1, cy2, cy3, cy4)
-# f1, f2 = learn.mutualInfo(mx_train, my_train)
-# scatter = [c.train1, c.train2, c.train3, c.train4]
-# monkey = 'Carmen'
-# plot_scatter(scatter, monkey, f1, f2)
-
-#
-# mx_train, my_train = get_x_y(my1, my2, my3, my4)
-# f1, f2 = learn.mutualInfo(mx_train, my_train)
-# scatter = [m.train1, m.train2, m.train3, m.train4]
-# monkey = 'Menta'
-# plot_scatter(scatter, monkey, f1, f2)
-
-#
-# mx_train, my_train = get_x_y(py1, py2, py3, py4)
-# f1, f2 = learn.mutualInfo(mx_train, my_train)
-# scatter = [p.train1, p.train2, p.train3, p.train4]
-# monkey = 'Penny'
-# plot_scatter(scatter, monkey, f1, f2)
-
-# if __name__ == '__main__':
-#     # # # carmen menta penny
-#     mx_train, my_train = get_x_y(m_c_py1, m_c_py2, m_c_py3, m_c_py4)
-#     mx_test, my_test = get_x_y(m_c_px1, m_c_px2, m_c_px3, m_c_px4)
-#     mx_valid, my_valid = get_x_y(m_c_pz1, m_c_pz2, m_c_pz3, m_c_pz4)
-#     get_result(mx_train, my_train, mx_valid, my_valid, "ALL monkeys - validation")
-# get_result(mx_train, my_train, mx_test, my_test, "menta + carmen + penny")
-
-# if __name__ == '__main__':
-# # # # menta to carmen
-#     mx_train, my_train = get_x_y(my1, my2, my3, my4)
-#     cx_test, cy_test = get_x_y(py1, py2, py3, py4)
-#     # cx_valid, cy_valid = get_x_y(cz1, cz2, cz3, cz4)
-#     # get_result(cx_train, cy_train, cx_valid, cy_valid, "carmen - validation")
-#     get_result(mx_train, my_train, cx_test, cy_test, "menta - train, carmen - test")
-
-# if __name__ == '__main__':
-# # #     # carmen + menta
-#
-#     c_m_x_train, c_m_y_train = get_x_y(c_my1, c_my2, c_my3, c_my4)
-#     px_test, py_test = get_x_y(y1, y2, y3, y4)
-#
-#     # px_valid, py_valid = get_x_y(pz1, pz2, pz3,pz4)
-#     # get_result(c_m_x_train, c_m_y_train, px_valid, py_valid, "carmen + menta - validation")
-#     get_result(c_m_x_train, c_m_y_train, px_test, py_test, "carmen + menta")
-# #
-# if __name__ == '__main__':
-# #     # penny+ menta
-#     p_m_x_train, p_m_y_train = get_x_y(p_my1, p_my2, p_my3, p_my4)
-#     # c_m_x_test, c_m_y_test = get_x_y(c_mx1, c_mx2, c_mx3, c_mx4)
-#     cx_test, cy_test = get_x_y(cx1, cx2, cx3,cx4)
-#     # get_result(p_m_x_train, p_m_y_train, cx_test, cy_test, "pennny + menta")
-#     cx_valid, cy_valid = get_x_y(cz1, cz2, cz3, cz4)
-#     get_result(p_m_x_train, p_m_y_train, cx_valid, cy_valid, "pennny + menta - validation")
-# if __name__ == '__main__':
-# #    carmen+ penny
-#
-#     get_result(c_px_train, c_py_train, cx_test, cy_test, "carmen + penny")
-# get_result(c_px_train, c_py_train, mx_valid, my_valid, "carmen + penny - validation")
-
-#
-# if __name__ == '__main__':
-#     #     # carmen
-#     cx_train, cy_train = get_x_y(cy1, cy2, cy3, cy4)
-#     cx_test, cy_test = get_x_y(cx1, cx2, cx3, cx4)
-#     cx_valid, cy_valid = get_x_y(cz1, cz2, cz3, cz4)
-#     get_result(cx_train, cy_train, cx_valid, cy_valid, "carmen - validation")
-#     get_result(cx_train, cy_train, cx_test, cy_test, "carmen")
-# # # # # # # # # #
-# # if __name__ == '__main__':
-# # # # # menta
-#     mx_train, my_train = get_x_y(my1, my2, my3, my4)
-#     mx_test, my_test = get_x_y(mx1, mx2, mx3,mx4)
-#     mx_valid, my_valid = get_x_y(mz1, mz2, mz3, mz4)
-#     get_result(mx_train, my_train, mx_valid, my_valid, "menta - validation")
-#     get_result(mx_train, my_train, mx_test, my_test, "menta")
-# # # #
-# if __name__ == '__main__':
-# # penny
-#     mx_train, my_train = get_x_y(py1, py2, py3, py4)
-#     mx_test, my_test = get_x_y(px1, px2, px3,px4)
-#     mx_valid, my_valid = get_x_y(pz1, pz2, pz3,pz4)
-#     get_result(mx_train, my_train, mx_valid, my_valid, "penny - validation")
-#
-#     # get_result(mx_train, my_train, mx_test, my_test, "penny")

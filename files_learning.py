@@ -39,10 +39,10 @@ def run_features(signals, monkey, feature, TYPE, function, small =0):
 # signals_valid = [p.sig_validation1, p.sig_validation2, p.sig_validation3, p.sig_validation4]
 
 
-# monkey = 'carmen'
-# signals_test = [c.sig_test1, c.sig_test2, c.sig_test3, c.sig_test4]
-# signals_train = [c.sig_train1, c.sig_train2, c.sig_train3, c.sig_train4]
-# signals_valid = [c.sig_validation1, c.sig_validation2, c.sig_validation3, c.sig_validation4]
+monkey = 'carmen'
+signals_test = [c.sig_test1, c.sig_test2, c.sig_test3, c.sig_test4]
+signals_train = [c.sig_train1, c.sig_train2, c.sig_train3, c.sig_train4]
+signals_valid = [c.sig_validation1, c.sig_validation2, c.sig_validation3, c.sig_validation4]
 
 
 
